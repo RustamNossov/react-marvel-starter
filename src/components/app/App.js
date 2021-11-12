@@ -1,67 +1,43 @@
-import {Component} from 'react';
-
-import MarvelService from '../../services/MarvelService';
+import React, {useCallback, useState, lazy, Suspense}  from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+//import { MainPage, ComicsPage, SingleComicPage } from '../pages';
 import AppHeader from "../appHeader/AppHeader";
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
+import  Spinner from '../spinner/Spinner';
 
-import ErrorBoundary from '../errorBoundary/ErrorBoundary';
-
-import decoration from '../../resources/img/vision.png';
-
-class App extends Component {
-    state = {
-        chars: {},
-        charInfoLoading: true
-    }
-
-    onChangeCharId = (charId) => {
-        this.setState({charInfoLoading : true})
-
-        const marvelService = new MarvelService();
-        marvelService.getCharacter(charId)
-        .then(res => {
-            this.setState({
-                chars: res, 
-                charInfoLoading: false
-            })
-        })
-        
-    }
+const Page404 = lazy(()=> import('../pages/404'))
+const MainPage = lazy(()=> import('../pages/MainPage'))
+const ComicsPage = lazy(()=> import('../pages/ComicsPage'))
+const SingleComicPage = lazy(()=> import('../pages/SingleComicPage'))
 
 
-    render() {
+const App = () => {
+    const [comicData, setComicData] = useState({})
 
-        return (
+    const onComicsChange = useCallback((comicData)=> {
+        console.log(comicData)
+        setComicData(comicData)
+    }, [])
+
+    return (
+        <Router>
             <div className="app">
                 <AppHeader/>
                 <main>
-                <ErrorBoundary>
-                    <RandomChar/>
-                </ErrorBoundary>
-                    
-                    <div className="char__content">
-                        <ErrorBoundary>
-                            <CharList 
-                                onChangeCharId={(id)=>this.onChangeCharId(id)}/>
-                        </ErrorBoundary>
-                        
-                            <ErrorBoundary>
-                                <CharInfo 
-                                        chars={this.state.chars}
-                                        isLoading = {this.state.charInfoLoading}
-                                        charInfoError = {this.state.charInfoError}/>
-                            </ErrorBoundary>
-                        
-                    </div>
-                    <img className="bg-decoration" src={decoration} alt="vision"/>
+                   <Suspense fallback={ <Spinner/> }>
+                        <Routes>
+                                <Route exact path="/" element={ <MainPage/> }/>
+                                <Route exact path="/comics" element={ <ComicsPage onComicsChange={(comicData)=>onComicsChange(comicData)}/> }/>
+                                <Route exact path="/comics/:id" element={ <SingleComicPage comicData={comicData}/> }/>
+                                <Route path='*' element={ <Page404/> }/>
+                        </Routes>   
+                   </Suspense>
                 </main>
             </div>
-        )
-    }
-} 
-    
 
+        </Router>
+        
+    )
+    
+} 
 
 export default App;
