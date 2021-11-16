@@ -2,9 +2,8 @@ import {useState, useCallback} from 'react';
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
-
+import FindACharacter from '../findCharacter/FindACharacter';
 import ErrorBoundary from '../errorBoundary/ErrorBoundary';
-
 import decoration from '../../resources/img/vision.png';
 
 const MainPage = () => {
@@ -24,10 +23,18 @@ const MainPage = () => {
                     <CharList 
                         onChangeCharId={(id)=>onChangeCharId(id)}/>
                 </ErrorBoundary>
-                
-                    <ErrorBoundary>
-                        <CharInfo charId={charId}/>
+                <div>
+                <ErrorBoundary>
+                            <CharInfo charId={charId}/>
                     </ErrorBoundary>
+                      <ErrorBoundary>
+                            <FindACharacter/>
+                      </ErrorBoundary>
+
+                </div>
+                   
+                    
+                   
             </div>
             <img className="bg-decoration" src={decoration} alt="vision"/>
     </>

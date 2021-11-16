@@ -19,6 +19,11 @@ const useMarvelService = () => {
         return _transformCharacter(res.data.results[0])
     }
 
+    const getCharacterByName = async(name) => {
+        const res = await request(`${_apiBase}characters?name=${name}&apikey=${_apiKey}`)
+        return _transformCharacter(res.data.results[0])
+    }
+
     const getRundomCharacter =  () => {
         const rndId =  Math.floor(Math.random() * (1011400-1011000) + 1011000);
         return getCharacter(rndId)
@@ -26,23 +31,30 @@ const useMarvelService = () => {
     }
 
     const _transformCharacter = (character) => {
-        const descr = character.description;
-        
-        const newDescr = descr === '' ? "Unfortunatelly, we don't have any description for this character" : descr;
 
+        try {
+            const descr = character.description;
         
-        const isTherePicture =  character.thumbnail.path.search('image_not_available') === -1 && character.thumbnail.path.search('4c002e0305708') === -1 ? true : false; 
-       
-        return {
-            comics: character.comics.items,
-            id: character.id,
-            name: character.name,
-            description: newDescr,
-            thumbnail: character.thumbnail.path + '.'+character.thumbnail.extension,
-            homepage: character.urls[0].url,
-            wiki:  character.urls[1].url,
-            isTherePicture: isTherePicture
+            const newDescr = descr === '' ? "Unfortunatelly, we don't have any description for this character" : descr;
+    
+            
+            const isTherePicture =  character.thumbnail.path.search('image_not_available') === -1 && character.thumbnail.path.search('4c002e0305708') === -1 ? true : false; 
+            
+            return {
+                comics: character.comics.items,
+                id: character.id,
+                name: character.name,
+                description: newDescr,
+                thumbnail: character.thumbnail.path + '.'+character.thumbnail.extension,
+                homepage: character.urls[0].url,
+                wiki:  character.urls[1].url,
+                isTherePicture: isTherePicture
+            }
+
+        } catch(e) {
+            return null
         }
+       
     }
 
 
@@ -55,17 +67,21 @@ const useMarvelService = () => {
     }
 
     const _transformComics = (comics) => {
-        return {
-            id: comics.id,
-            title: comics.title,
-            price: comics.prices[0].price,
-            thumbnail: comics.thumbnail.path + '.'+ comics.thumbnail.extension,
-            pageCount: comics.pageCount,
-            description: comics.description,
-            language: comics.language,
-        }
+        try {
+            return {
+                id: comics.id,
+                title: comics.title,
+                price: comics.prices[0].price,
+                thumbnail: comics.thumbnail.path + '.'+ comics.thumbnail.extension,
+                pageCount: comics.pageCount,
+                description: comics.description,
+                language: comics.language,
+            }
+
+        } catch(e) { return null }
+        
     }
 
-    return {loading, error, btnDisabled, getAllCharacters, getCharacter, getRundomCharacter, clearError, getAllComics}
+    return {loading, error, btnDisabled, getAllCharacters, getCharacter, getRundomCharacter, clearError, getAllComics, getCharacterByName}
 }
 export default useMarvelService;
