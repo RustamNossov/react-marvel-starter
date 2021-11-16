@@ -25,11 +25,11 @@ const MainPage = () => {
                 </ErrorBoundary>
                 <div>
                 <ErrorBoundary>
-                            <CharInfo charId={charId}/>
-                    </ErrorBoundary>
-                      <ErrorBoundary>
-                            <FindACharacter/>
-                      </ErrorBoundary>
+                    <CharInfo charId={charId}/>
+                </ErrorBoundary>
+                <ErrorBoundary>
+                    <FindACharacter/>
+                </ErrorBoundary>
 
                 </div>
                    
