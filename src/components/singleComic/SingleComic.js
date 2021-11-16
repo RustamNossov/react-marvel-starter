@@ -1,5 +1,7 @@
-import './singleComic.scss';
 import { Link, Navigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+ 
+import './singleComic.scss';
 
 const SingleComic = ({comicData}) => {
         console.log(Object.keys(comicData).length === 0)
@@ -11,6 +13,13 @@ const SingleComic = ({comicData}) => {
         
         return (
             <div className="single-comic">
+                <Helmet>
+                    <meta
+                        name="description"
+                        content={`${title} comics book`}
+                    />
+                    <title>{title}</title>
+                </Helmet>
                 <img src={thumbnail} alt="x-men" className="single-comic__img"/>
                 <div className="single-comic__info">
                     <h2 className="single-comic__name">{title}</h2>
